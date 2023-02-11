@@ -17,7 +17,7 @@ class HBNBCommand(cmd.Cmd):
 
     def __init__(self):
         cmd.Cmd.__init__(self)
-        self.prompt = '(hbnb) '
+        self.prompt = '(hbnb)'
 
     def do_quit(self, arg):
         sys.exit(1)
