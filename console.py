@@ -8,12 +8,19 @@ import cmd
 import sys
 from models.base_model import BaseModel
 from models.user import User
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
 
 class HBNBCommand(cmd.Cmd):
 
     """
     class HBNBCommand
     """
+
+    classes = ["BaseModel", "User", "State", "City", "Place", "Amenity", "Review"]
 
     def __init__(self):
         cmd.Cmd.__init__(self)
@@ -40,6 +47,7 @@ class HBNBCommand(cmd.Cmd):
         
         if len(args) == 0:
             print("** class name missing **")
+            return False
         else:
             args_list = args.split()
             if args_list[0] not in ['BaseModel']:
@@ -58,6 +66,7 @@ class HBNBCommand(cmd.Cmd):
     def do_show(self, args):
         if len(args) == 0:
             print("** class name missing **")
+            return False
 
     def help_show(self):
         print ("syntax: create")
@@ -66,6 +75,7 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, args):
         if len(args) == 0:
             print("** class name missing **")
+            return False
     
     def help_destroy(self):
         print ("syntax: create")
@@ -74,6 +84,7 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         if len(args) == 0:
             print("** class name missing **")
+            return False
         else:
             args_list = args.split()
             if args_list[0] not in ['BaseModel']:
