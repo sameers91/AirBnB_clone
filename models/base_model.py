@@ -29,14 +29,13 @@ class BaseModel():
         storage.save()
 
     def to_dict(self):
-        dict = self.__dict__
+        dict = {}
         dict['__class__'] = type(self).__name__
-        print(self.created_at)
-        print(type(self.created_at))
-        self.created_at = datetime.strptime(self.created_at, '%Y-%m-%dT%H:%M:%S.%f')
-        print(self.created_at)
-        dict['created_at'] = (self.created_at).isoformat()
-        dict['updated_at'] = (self.updated_at).isoformat()
+        for key, value in self.__dict__.items():
+            if key == "created_at" or key == "updated_at":
+                dict[key] = value.isoformat()
+            else:
+                dict[key] = value
         return dict
 
     def __str__(self):
