@@ -37,6 +37,7 @@ class HBNBCommand(cmd.Cmd):
         print ("-- terminates the application")
 
     def do_create(self, args):
+        
         if len(args) == 0:
             print("** class name missing **")
         else:
@@ -47,6 +48,7 @@ class HBNBCommand(cmd.Cmd):
             else:
                 if args_list[0] == 'BaseModel':
                     my_model = BaseModel()
+                    my_model.save()
                     print (my_model.id)
 
     def help_create(self):
