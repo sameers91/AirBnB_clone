@@ -73,6 +73,11 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         if len(args) == 0:
             print("** class name missing **")
+        else:
+            args_list = args.split()
+            if args_list[0] not in ['BaseModel']:
+                print(args_list[0])
+                print('** class name missing **')
     
     def help_all(self):
         print ("syntax: create")
