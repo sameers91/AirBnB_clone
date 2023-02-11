@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 """
 HBNBCommand contains the entry point of the command interpreter
 """
