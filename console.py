@@ -38,6 +38,13 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         
+        """Creates a new instance of @cls_name class,
+        and prints the new instance's ID.
+        Args:
+            line(args): Arguments to enter with command: <class name>
+            Example: 'create User'
+        """
+            
         if len(args) == 0:
             print("** class name missing **")
         else:
