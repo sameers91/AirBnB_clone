@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
 HBNBCommand contains the entry point of the command interpreter
 """
@@ -50,17 +48,34 @@ class HBNBCommand(cmd.Cmd):
                     my_model = BaseModel()
                     print (my_model.id)
 
+    def help_create(self):
+        print ("syntax: create")
+        print ("-- create an instance of a model")
+
     def do_show(self, args):
         if len(args) == 0:
             print("** class name missing **")
 
+    def help_show(self):
+        print ("syntax: create")
+        print ("-- show an instance of a model")
+
     def do_destroy(self, args):
         if len(args) == 0:
             print("** class name missing **")
+    
+    def help_destroy(self):
+        print ("syntax: create")
+        print ("-- desroy an instance of a model")
 
     def do_all(self, args):
         if len(args) == 0:
             print("** class name missing **")
+    
+    def help_all(self):
+        print ("syntax: create")
+        print ("-- Prints all string representation of all instances")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
