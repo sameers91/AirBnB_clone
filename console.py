@@ -75,7 +75,7 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         if len(args) == 0:
             print("** class name missing **")
-            return 0
+            return 1
         else:
             args_list = args.split()
             if args_list[0] not in ['BaseModel']:
