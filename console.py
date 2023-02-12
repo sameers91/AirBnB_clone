@@ -3,12 +3,10 @@
 
 import cmd
 from models.base_model import BaseModel
-from models.user import User
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
+from models import storage
+import re
+import json
+
 
 class HBNBCommand(cmd.Cmd):
 
@@ -16,11 +14,10 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
 
-    classes = ["BaseModel", "User", "State", "City", "Place", "Amenity", "Review"]
-
-    def __init__(self):
-        cmd.Cmd.__init__(self)
-        self.prompt = '(hbnb)'
+    def default(self, line):
+        """Catch commands if nothing else matches then."""
+        # print("DEF:::", line)
+        self._precmd(line)
 
     def _precmd(self, line):
         """Intercepts commands to test for class.syntax()"""
@@ -127,7 +124,6 @@ class HBNBCommand(cmd.Cmd):
         """
         if line == "" or line is None:
             print("** class name missing **")
-            return False
         else:
             words = line.split(' ')
             if words[0] not in storage.classes():
@@ -135,34 +131,48 @@ class HBNBCommand(cmd.Cmd):
             elif len(words) < 2:
                 print("** instance id missing **")
             else:
-                if args_list[0] == 'BaseModel':
-                    my_model = BaseModel()
-                    my_model.save()
-                    print (my_model.id)
+                key = "{}.{}".format(words[0], words[1])
+                if key not in storage.all():
+                    print("** no instance found **")
+                else:
+                    del storage.all()[key]
+                    storage.save()
 
-    def help_create(self):
-        print ("syntax: create")
-        print ("-- create an instance of a model")
+    def do_all(self, line):
+        """Prints all string representation of all instances.
+        """
+        if line != "":
+            words = line.split(' ')
+            if words[0] not in storage.classes():
+                print("** class doesn't exist **")
+            else:
+                nl = [str(obj) for key, obj in storage.all().items()
+                      if type(obj).__name__ == words[0]]
+                print(nl)
+        else:
+            new_list = [str(obj) for key, obj in storage.all().items()]
+            print(new_list)
 
-    def do_show(self, args):
-        if len(args) == 0:
+    def do_count(self, line):
+        """Counts the instances of a class.
+        """
+        words = line.split(' ')
+        if not words[0]:
             print("** class name missing **")
-            return False
-
-    def help_show(self):
-        print ("syntax: create")
-        print ("-- show an instance of a model")
+        elif words[0] not in storage.classes():
+            print("** class doesn't exist **")
+        else:
+            matches = [
+                k for k in storage.all() if k.startswith(
+                    words[0] + '.')]
+            print(len(matches))
 
     def do_update(self, line):
         """Updates an instance by adding or updating attribute.
         """
         if line == "" or line is None:
             print("** class name missing **")
-            return False
-    
-    def help_destroy(self):
-        print ("syntax: create")
-        print ("-- desroy an instance of a model")
+            return
 
         rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
         match = re.search(rex, line)
@@ -172,16 +182,37 @@ class HBNBCommand(cmd.Cmd):
         value = match.group(4)
         if not match:
             print("** class name missing **")
-            return False
+        elif classname not in storage.classes():
+            print("** class doesn't exist **")
+        elif uid is None:
+            print("** instance id missing **")
         else:
-            args_list = args.split()
-            if args_list[0] not in ['BaseModel']:
-                print(args_list[0])
-                print('** class name missing **')
-    
-    def help_all(self):
-        print ("syntax: create")
-        print ("-- Prints all string representation of all instances")
+            key = "{}.{}".format(classname, uid)
+            if key not in storage.all():
+                print("** no instance found **")
+            elif not attribute:
+                print("** attribute name missing **")
+            elif not value:
+                print("** value missing **")
+            else:
+                cast = None
+                if not re.search('^".*"$', value):
+                    if '.' in value:
+                        cast = float
+                    else:
+                        cast = int
+                else:
+                    value = value.replace('"', '')
+                attributes = storage.attributes()[classname]
+                if attribute in attributes:
+                    value = attributes[attribute](value)
+                elif cast:
+                    try:
+                        value = cast(value)
+                    except ValueError:
+                        pass  # fine, stay a string then
+                setattr(storage.all()[key], attribute, value)
+                storage.all()[key].save()
 
 
 if __name__ == '__main__':
