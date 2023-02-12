@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
 Class FileStorage that serializes instances 
 to a JSON file and deserializes JSON file to instances
@@ -31,6 +29,11 @@ class FileStorage():
             json.dump(json_obj, f)
 
     def reload(self):
-        pass
-
-    
+        try:
+            with open(self.__file_path, 'r') as f:
+                dict = json.loads(f.read())
+                for value in dict.values():
+                    cls = value["__class__"]
+                    self.new(eval(cls)(**value))
+        except Exception:
+            pass
